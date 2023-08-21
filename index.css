@@ -1,0 +1,189 @@
+:root {
+    /* Sizes */
+    --card-margin: 18px;
+    --card-aspect: 9 / 16;
+    --card-padding: 18px;
+    --map-margin: 18px;
+    --map-height: 81px;
+    --year-margin: 3px;
+    --year-aspect: 2 / 1;
+    --map-item-margin: 3px;
+    --map-item-gap: 3px;
+    --map-item-aspect: 1 / 2;
+
+    /* Colors */
+    --background-color: #eaeaea;
+    --map-background-color: #2a2a2a;
+    --year-background-color: #fafafa;
+    --year-text-color: #111111;
+    --card-active-color: #dfdfdf;
+    --card-background-color: #fafafa;
+    --card-text-color: #111111;
+    --map-item-background-color: #efefef;
+    --window-background-color: #22222250;
+
+    /* Shadows */
+    --card-shadow: 0px 0px 8px 0px rgba(100, 100, 100, 0.75);
+    --year-shadow: 0px 0px 6px 0px rgba(100, 100, 100, 1);
+    --map-shadow: 0px 0px 8px 0px rgba(100, 100, 100, 0.75);
+}
+
+.card {
+    --offset-x: 0;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    height: 100%;
+    aspect-ratio: var(--card-aspect);
+    margin-right: var(--card-margin);
+    padding: 0.5rem;
+    color: var(--card-text-color);
+    background-color: var(--card-background-color);
+    box-shadow: var(--card-shadow);
+    transform: translateX(var(--offset-x));
+    padding: var(--card-padding);
+}
+
+.card:last-child {
+    margin-right: 0;
+}
+
+.card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    pointer-events: none;
+}
+
+.card h1 {
+    pointer-events: none;
+}
+
+.card h2 {
+    pointer-events: none;
+}
+
+.card h3 {
+    pointer-events: none;
+}
+
+.card h4 {
+    pointer-events: none;
+}
+
+.card h5 {
+    pointer-events: none;
+}
+
+.card p {
+    pointer-events: none;
+}
+
+.card div {
+    pointer-events: none;
+}
+
+.map_item {
+    --offset-x: 0;
+    display: flex;
+    flex-direction: column;
+    top: var(--map-item-margin);
+    height: calc((100% - var(--year-margin) * 2));
+    aspect-ratio: var(--map-item-aspect);
+    margin-right: var(--map-item-gap);
+    background-color: var(--map-item-background-color);
+    transform: translateX(var(--offset-x));
+    cursor: pointer;
+}
+
+.map_item_filler {
+    --size-y: 1;
+    display: block;
+    margin-top: auto;
+    width: 100%;
+    height: calc(100% * (1 - var(--size-y)));
+    background-color: var(--map-background-color);
+}
+
+.map {
+    display: flex;
+    border-radius: 100vh;
+    height: 100%;
+    max-width: 100%;
+    justify-content: start;
+    align-items: center;
+    background-color: var(--map-background-color);
+    padding-left: calc((var(--map-height) - var(--year-margin) - var(--map-margin)) * var(--year-aspect));
+    box-shadow: var(--map-shadow);
+    overflow: hidden;
+    user-select: none;
+}
+
+.year {
+    --offset-x: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100vh;
+    aspect-ratio: var(--year-aspect);
+    height: calc(var(--map-height) - var(--map-margin) - var(--year-margin) * 2);
+    color: var(--year-text-color);
+    background-color: var(--year-background-color);
+    box-shadow: var(--year-shadow);
+    margin: 0 var(--year-margin);
+    transform: translateX(var(--offset-x));
+    cursor: pointer;
+}
+
+.window {
+    --window-width: 0;
+    position: absolute;
+    width: var(--window-width);
+    border-radius: 0 calc(var(--map-height) - var(--map-margin)) calc(var(--map-height) - var(--map-margin)) 0;
+    right: var(--map-margin);
+    height: calc(var(--map-height) - var(--map-margin));
+    z-index: 1000;
+    background-color: var(--window-background-color);
+    pointer-events: none;
+}
+
+.window_offset {
+    --window-offset: 10px;
+    position: absolute;
+    width: calc((var(--map-height) - var(--year-margin) - var(--map-margin)) * var(--year-aspect) + var(--window-offset));
+    border-radius: calc(var(--map-height) - var(--map-margin)) 0 0 calc(var(--map-height) - var(--map-margin));
+    left: calc(var(--map-margin));
+    height: calc(var(--map-height) - var(--map-margin));
+    z-index: 500;
+    background-color: var(--window-background-color);
+    pointer-events: none;
+}
+
+.scroll_area {
+    display: flex;
+    grid-row: 1 / 1;
+    width: 100%;
+    overflow: hidden;
+    padding: var(--card-margin);
+}
+
+.map_area {
+    grid-row: 2 / 2;
+    width: 100%;
+    padding: 0 var(--map-margin) var(--map-margin) var(--map-margin);
+}
+
+.grid {
+    display: grid;
+    width: 100vw;
+    height: 100dvh;
+    background-color: var(--background-color);
+    grid-template-rows: auto var(--map-height);
+    grid-template-columns: 100vw;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
