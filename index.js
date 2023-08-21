@@ -22,13 +22,6 @@ let windowWidth = 0;
 let json = [{ name: "Loading...", height: 1, year: 2023 }];
 
 fetchItems();
-// json = [];
-// for (let i = 0; i < 30; i++) {
-//     json.push({ name: `Test ${i + 1}`, height: (Math.random() + 0.1) / 1.1, year: 2023 });
-// }
-// for (let i = 0; i < 30; i++) {
-//     json.push({ name: `Test ${i + 21}`, height: (Math.random() + 0.1) / 1.1, year: 2022 });
-// }
 
 async function fetchItems() {
     let jsonOffset = 0;
