@@ -1,3 +1,5 @@
+const apiUrl = 'https://algorithms.design/api/v1/item?id=6304bbde7a4071611257d45e';
+
 const root = getComputedStyle(document.body);
 const scrollArea = document.getElementById("scroll_area");
 const map = document.getElementById("map");
@@ -22,6 +24,13 @@ let windowWidth = 0;
 let json = [{ name: "Loading...", height: 1, year: 2023 }];
 
 fetchItems();
+// json = [];
+// for (let i = 0; i < 30; i++) {
+//     json.push({ name: `Test ${i + 1}`, height: (Math.random() + 0.1) / 1.1, year: 2023 });
+// }
+// for (let i = 0; i < 30; i++) {
+//     json.push({ name: `Test ${i + 21}`, height: (Math.random() + 0.1) / 1.1, year: 2022 });
+// }
 
 async function fetchItems() {
     let jsonOffset = 0;
@@ -29,7 +38,7 @@ async function fetchItems() {
     try {
         // Fetch first 100 items and get the total items number
         let response = await fetch(
-            `https://algorithms.design/api/v1/item?id=6304bbde7a4071611257d45e&offset=${jsonOffset}&limit=100`
+            `${apiUrl}&offset=${jsonOffset}&limit=100`
         );
         response = await response.json();
         total = response.total;
@@ -38,7 +47,7 @@ async function fetchItems() {
         // Fetch the rest of items
         for (jsonOffset = 100; jsonOffset < total; jsonOffset += 100) {
             response = await fetch(
-                `https://algorithms.design/api/v1/item?id=6304bbde7a4071611257d45e&offset=${jsonOffset}&limit=100`
+                `${apiUrl}&offset=${jsonOffset}&limit=100`
             );
             response = await response.json();
             json = json.concat(json, response.items);
@@ -177,7 +186,6 @@ function renderItems(itemsJson) {
     map.appendChild(windowOffset);
 
     if (scrollArea.children.length !== Math.ceil(limit) || scrollToActive) {
-        console.log('clear scroll area!', { length: scrollArea.children.length, limit: Math.ceil(limit) });
         scrollArea.textContent = "";
         let end = offset + limit;
         if (end > json.length) end = json.length;
