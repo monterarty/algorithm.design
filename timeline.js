@@ -10,15 +10,17 @@ let cardRect = null;
 let cellRect = null;
 let cardStyle = null;
 let cardMargin = null;
+let cardListRect = null;
 let cellStyle = null;
 let cellMargin = null;
+let cellListRect = null;
 let loadFromApi = false;
 let cellContainer = null;
 let grid = null;
 let backButton = null
 let cardListOffset = null;
 
-var items = [];
+let items = [];
 
 document.addEventListener("DOMContentLoaded", _ => {
     cellContainer = document.querySelector('.cells-container');
@@ -37,7 +39,6 @@ document.addEventListener("DOMContentLoaded", _ => {
     });
     
     grid.appendChild(cellContainer);
-    
     
     if (loadFromApi) {
         loadItems(items).then(function () {
@@ -66,8 +67,10 @@ document.addEventListener("DOMContentLoaded", _ => {
                 cellRect = cellList.children[0].getBoundingClientRect();
                 cardStyle = window.getComputedStyle(cardList.children[0]);
                 cardMargin = parseFloat(cardStyle.marginLeft);
+                cardListRect = cardList.getBoundingClientRect();
                 cellStyle = window.getComputedStyle(cellList.children[0]);
                 cellMargin = parseFloat(cellStyle.marginLeft);
+                cellListRect = cellList.getBoundingClientRect();
                 tintCells();
                 firstYear.textContent = items[0].year;
                 firstYear.onclick = e => scrollFunction(cardList.children[0], cellList.children[0], e);
@@ -143,8 +146,10 @@ function prepareCMSLoadItems(items) {
         cellRect = cellList.children[0].getBoundingClientRect();
         cardStyle = window.getComputedStyle(cardList.children[0]);
         cardMargin = parseFloat(cardStyle.marginLeft);
+        cardListRect = cardList.getBoundingClientRect();
         cellStyle = window.getComputedStyle(cellList.children[0]);
         cellMargin = parseFloat(cellStyle.marginLeft);
+        cellListRect = cellList.getBoundingClientRect();
         tintCells();
         firstYear.textContent = items[0].year;
         firstYear.onclick = e => scrollFunction(cardList.children[0], cellList.children[0], e);
@@ -520,7 +525,7 @@ function populateLists() {
 function scrollFunction(card, cell) {
     cardList.scrollTo({
         top: 0,
-        left: card.offsetLeft - cardMargin,
+        left: card.offsetLeft - cardListRect.left - cardMargin,
         behavior: 'smooth'
     });
     cellList.scrollTo({
@@ -531,7 +536,7 @@ function scrollFunction(card, cell) {
 }
 
 function getVisibleCards() {
-    const cardsInScreen = Math.ceil(window.innerWidth / (cardRect.width + cardMargin)) + 1;
+    const cardsInScreen = Math.ceil(cardList.clientWidth / (cardRect.width + cardMargin)) + 1;
     const firstIndex = Math.floor(cardList.scrollLeft / (cardRect.width + cardMargin));
     const lastIndex = firstIndex + cardsInScreen > cardList.children.length ?
                         cardList.children.length :
@@ -545,7 +550,7 @@ function getVisibleCards() {
 }
 
 function getVisibleCells(years, all) {
-    const cellsInScreen = Math.ceil((window.innerWidth - firstYear.clientWidth) / (cellRect.width + cellMargin));
+    const cellsInScreen = Math.ceil((cellList.clientWidth - yearWidth) / (cellRect.width + cellMargin));
     const firstVisibleCard = getVisibleCards()[0];
     const firstCellId = Number(firstVisibleCard.id.replace('card-', ''));
     const yearsOffset = (yearWidth + yearMargin) * (items[Math.floor(firstCellId)].years);
@@ -590,14 +595,14 @@ function tintCells() {
         const cell = document.querySelector('#' + card.id.replace('card', 'cell'));
         const coef = cellRect.width / rect.width;
 
-        const leftOverlay = rect.left < 0 ? -rect.left * coef : 0;
+        const leftOverlay = rect.left < cardListRect.left ? -(rect.left - cardListRect.left) * coef : 0;
         if (leftOverlay > 0 && leftOverlay < cellRect.width) {
             const id = Number(card.id.replace('card-', ''));
             const year = document.querySelector(`#year-${id+1}`);
             if (year) year.style.background = '#fff';
         }
         cell.style.setProperty('--left-width', leftOverlay > cellRect.width ? `${cellRect.width}px` : `${leftOverlay}px`);
-        const rightOverlay = rect.right > window.innerWidth ? (rect.right - window.innerWidth) * coef : 0;
+        const rightOverlay = rect.right > cardListRect.right ? (rect.right - cardListRect.right) * coef : 0;
         if ((leftOverlay === 0 && rightOverlay === 0) || (rightOverlay > 0 && rightOverlay < cellRect.width)) {
             const year = document.querySelector('#' + card.id.replace('card', 'year'));
             if (year) year.style.background = '#fff';
