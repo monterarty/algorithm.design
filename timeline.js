@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", _ => {
                 cardMargin = parseFloat(cardStyle.marginLeft);
                 cardListRect = cardList.getBoundingClientRect();
                 cellStyle = window.getComputedStyle(cellList.children[0]);
-                cellMargin = parseFloat(cellStyle.marginLeft);
+                cellMargin = parseFloat(cellStyle.marginRight);
                 cellListRect = cellList.getBoundingClientRect();
                 tintCells();
                 firstYear.textContent = items[0].year;
@@ -347,7 +347,7 @@ function horizontalWheel() {
 
     function onTouchEnd(e) {
         e.preventDefault();
-        const deltaX = (previousX - currentX) / window.innerWidth * 250;
+        const deltaX = previousX - currentX;
         previousX = currentX;
         scrollSpeed = deltaX;
         requestAnimationFrame(momentumScroll);
@@ -420,7 +420,7 @@ function horizontalWheel() {
 
     function onDragEnd() {
         const coef = getScale();
-        const deltaX = (previousX - currentX) / window.innerWidth * 250;
+        const deltaX = previousX - currentX;
         previousX = currentX;
         scrollSpeed = deltaX / coef;
         dragging = false;
@@ -575,9 +575,9 @@ function getVisibleCells(years, all) {
         firstIndex = 0;
     }
     if (firstIndex > cellList.children.length - 1) firstIndex = cellList.children.length - 1;
-    const lastIndex = firstIndex + cellsInScreen > cellList.children.length ?
+    const lastIndex = firstIndex + cellsInScreen + 10 > cellList.children.length ?
                                 cellList.children.length :
-                                firstIndex + cellsInScreen;
+                                firstIndex + cellsInScreen + 10;
 
     const cells = [];
     for (let i = firstIndex; i < lastIndex; i++)
