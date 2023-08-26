@@ -148,7 +148,7 @@ function prepareCMSLoadItems(items) {
         cardMargin = parseFloat(cardStyle.marginLeft);
         cardListRect = cardList.getBoundingClientRect();
         cellStyle = window.getComputedStyle(cellList.children[0]);
-        cellMargin = parseFloat(cellStyle.marginLeft);
+        cellMargin = parseFloat(cellStyle.marginRight);
         cellListRect = cellList.getBoundingClientRect();
         tintCells();
         firstYear.textContent = items[0].year;
@@ -541,7 +541,7 @@ function scrollFunction(card, cell) {
     });
     cellList.scrollTo({
         top: 0,
-        left: cell.offsetLeft - cardMargin - cellMargin - yearWidth + yearMargin * 2,
+        left: cell.offsetLeft - cellMargin - yearWidth,
         behavior: 'smooth'
     });
 }
