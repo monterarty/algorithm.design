@@ -290,6 +290,17 @@ function horizontalWheel() {
         if (!yearsScroll(yearsOffset, coef))
             return;
 
+        console.log({
+            coef,
+            yearsOffset,
+            cardListLeft: cardList.scrollLeft,
+            cellLIstLeft: cellList.scrollLeft,
+            cardWidth: cardRect.width,
+            cardMargin,
+            cellWidth: cellRect.width,
+            cellMargin
+        });
+
         // Performing horizontal scroll
         cardList.scrollTo({
             top: 0,
