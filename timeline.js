@@ -186,6 +186,8 @@ function populateCMSLoadLists() {
         cardList.appendChild(card);
         cellList.appendChild(cell);
         cell.onclick = e => scrollFunction(card, cell, e);
+
+        document.querySelector(`#${card.id} img`).decoding = "async";
     }
 }
 
@@ -289,17 +291,6 @@ function horizontalWheel() {
         const yearsOffset = getYearsOffset();
         if (!yearsScroll(yearsOffset, coef))
             return;
-
-        console.log({
-            coef,
-            yearsOffset,
-            cardListLeft: cardList.scrollLeft,
-            cellLIstLeft: cellList.scrollLeft,
-            cardWidth: cardRect.width,
-            cardMargin,
-            cellWidth: cellRect.width,
-            cellMargin
-        });
 
         // Performing horizontal scroll
         cardList.scrollTo({
@@ -488,7 +479,17 @@ async function loadItems(items) {
   // }
 }
 
-function populateLists() {
+async function loadImage(url, alt, elem) {
+    return new Promise((resolve, reject) => {
+        elem.onload = () => resolve(elem);
+        elem.onerror = reject;
+        elem.src = url;
+        elem.alt = alt;
+        elem.decoding = "async";
+    });
+}
+
+async function populateLists() {
     for (let i = 0, current = items[0].year; i < items.length; i++) {
         const card = document.createElement('div');
         const div = document.createElement('div');
@@ -496,9 +497,8 @@ function populateLists() {
         card.id = `card-${i}`;
 
         if (items[i].thumbnail) {
-          const image = document.createElement('img');
-          image.src = items[i].thumbnail?.url ?? '';
-          image.alt = items[i].thumbnail?.alt ?? '';
+          const image = new Image();
+          await loadImage(items[i].thumbnail?.url ?? '', items[i].thumbnail?.alt ?? '', image);
           div.appendChild(image);
         }
         const header = document.createElement('h1');
@@ -547,7 +547,7 @@ function scrollFunction(card, cell) {
 }
 
 function getVisibleCards() {
-    const cardsInScreen = Math.ceil(cardList.clientWidth / (cardRect.width + cardMargin)) + 1;
+    const cardsInScreen = Math.ceil(cellListRect.width / (cardRect.width + cardMargin)) + 1;
     const firstIndex = Math.floor(cardList.scrollLeft / (cardRect.width + cardMargin));
     const lastIndex = firstIndex + cardsInScreen > cardList.children.length ?
                         cardList.children.length :
@@ -561,7 +561,7 @@ function getVisibleCards() {
 }
 
 function getVisibleCells(years, all) {
-    const cellsInScreen = Math.ceil((cellList.clientWidth - yearWidth) / (cellRect.width + cellMargin));
+    const cellsInScreen = Math.ceil((cellListRect.width - yearWidth) / (cellRect.width + cellMargin));
     const firstVisibleCard = getVisibleCards()[0];
     const firstCellId = Number(firstVisibleCard.id.replace('card-', ''));
     const yearsOffset = (yearWidth + yearMargin) * (items[Math.floor(firstCellId)].years);
@@ -569,7 +569,7 @@ function getVisibleCells(years, all) {
   
     let firstIndex = Math.floor((cellList.scrollLeft - yearsOffset) / (cellRect.width + cellMargin)) + items[firstCellId].years;
     if (all) {
-      if (cardList.scrollLeft * coef < cellList.scrollWidth - cellList.clientWidth)
+      if (cardList.scrollLeft * coef < cellList.scrollWidth - cellListRect.width)
         firstIndex -= 4;
       if (firstIndex < 0)
         firstIndex = 0;
@@ -592,7 +592,12 @@ function tintCells() {
     const visibleCells = getVisibleCells(false, true);
     const visibleYears = getVisibleCells(true);
 
+    const cardStart = Number(visibleCards[0].id.replace('card-', ''));
+    const cardEnd = Number(visibleCards[visibleCards.length - 1].id.replace('card-', ''));
+
     for (const cell of visibleCells) {
+        const cellId = Number(cell.id.replace('cell-', ''));
+        if (cellId >= cardStart && cellId <= cardEnd) continue;
         cell.style.setProperty('--left-width', '100%');
         cell.style.setProperty('--right-width', '0');
     }
@@ -601,19 +606,22 @@ function tintCells() {
       year.style.background = '#000';
     }
 
-    for (const card of visibleCards) {
+    const coef = cellRect.width / cardRect.width;
+    for (let i = cardStart; i <= cardEnd; i++) {
+        const card = cardList.children[i];
         const rect = card.getBoundingClientRect();
+        const rectLeft = rect.left;
+        const rectRight = rect.right;
         const cell = document.querySelector('#' + card.id.replace('card', 'cell'));
-        const coef = cellRect.width / rect.width;
 
-        const leftOverlay = rect.left < cardListRect.left ? -(rect.left - cardListRect.left) * coef : 0;
+        const leftOverlay = rectLeft < cardListRect.left ? -(rectLeft - cardListRect.left) * coef : 0;
         if (leftOverlay > 0 && leftOverlay < cellRect.width) {
             const id = Number(card.id.replace('card-', ''));
             const year = document.querySelector(`#year-${id+1}`);
             if (year) year.style.background = '#fff';
         }
         cell.style.setProperty('--left-width', leftOverlay > cellRect.width ? `${cellRect.width}px` : `${leftOverlay}px`);
-        const rightOverlay = rect.right > cardListRect.right ? (rect.right - cardListRect.right) * coef : 0;
+        const rightOverlay = rectRight > cardListRect.right ? (rectRight - cardListRect.right) * coef : 0;
         if ((leftOverlay === 0 && rightOverlay === 0) || (rightOverlay > 0 && rightOverlay < cellRect.width)) {
             const year = document.querySelector('#' + card.id.replace('card', 'year'));
             if (year) year.style.background = '#fff';
