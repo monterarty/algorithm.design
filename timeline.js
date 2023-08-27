@@ -22,6 +22,22 @@ let cardListOffset = null;
 
 let items = [];
 
+$(document).on('click', '.card', function() {
+    const data = {
+        "hype": +$(this).attr('hype') + 1,
+        "slug": $(this).attr('slug')
+    }
+    $.ajax({
+        url: 'https://algorithms.design/api/v1/collections/6304bbde7a4071611257d45e',
+        dataType: 'application/json',
+        method: 'PUT',
+        data: JSON.stringify(data),
+        success: function(response){
+		  console.log(response);
+	   }
+    })
+})
+
 document.addEventListener("DOMContentLoaded", _ => {
     cellContainer = document.querySelector('.cells-container');
     firstYear = document.querySelector('.first-year');
