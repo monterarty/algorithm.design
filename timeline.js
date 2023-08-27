@@ -321,10 +321,16 @@ function horizontalWheel() {
         scrollSpeed /= 1.1;
         if (Math.abs(scrollSpeed) < 1)
             return;
-
+        
+        if (cardList.scrollLeft === scrollWidth) 
+            cellContainer.classList.add('end');
+        else if (cellContainer.classList.contains('end')) 
+            cellContainer.classList.remove('end');
+        
         // Break if already stopped
-        if (cardList.scrollLeft === 0 || cardList.scrollLeft === scrollWidth)
+        if (cardList.scrollLeft === 0 || cardList.scrollLeft === scrollWidth) {
             return;
+        }
 
         requestAnimationFrame(momentumScroll);
     }
