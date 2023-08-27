@@ -618,13 +618,19 @@ function tintCells() {
         if (leftOverlay > 0 && leftOverlay < cellRect.width) {
             const id = Number(card.id.replace('card-', ''));
             const year = document.querySelector(`#year-${id+1}`);
-            if (year) year.style.background = '#fff';
+            if (year) {
+                year.style.background = '#fff';
+                year.style.color = '#000';
+            }
         }
         cell.style.setProperty('--left-width', leftOverlay > cellRect.width ? `${cellRect.width}px` : `${leftOverlay}px`);
         const rightOverlay = rectRight > cardListRect.right ? (rectRight - cardListRect.right) * coef : 0;
         if ((leftOverlay === 0 && rightOverlay === 0) || (rightOverlay > 0 && rightOverlay < cellRect.width)) {
             const year = document.querySelector('#' + card.id.replace('card', 'year'));
-            if (year) year.style.background = '#fff';
+            if (year) {
+                year.style.background = '#fff';
+                year.style.color = '#000';
+            }
         }
         cell.style.setProperty('--right-width', rightOverlay > cellRect.width ? `${cellRect.width}px` : `${rightOverlay}px`);
     }
