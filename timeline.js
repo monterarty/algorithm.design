@@ -322,7 +322,7 @@ function horizontalWheel() {
         if (Math.abs(scrollSpeed) < 1)
             return;
         
-        if (cardList.scrollLeft === scrollWidth) 
+        if ((scrollWidth - cardList.scrollLeft) < 10) 
             cellContainer.classList.add('end');
         else if (cellContainer.classList.contains('end')) 
             cellContainer.classList.remove('end');
