@@ -33,7 +33,6 @@ $(document).on('click', '.card', function() {
         method: 'PUT',
         data: JSON.stringify(data),
         success: function(response){
-		  console.log(response);
 	   }
     })
 })
@@ -620,6 +619,7 @@ function tintCells() {
 
     for (const year of visibleYears) {
       year.style.background = '#000';
+      year.style.color = '#fff';
     }
 
     const coef = cellRect.width / cardRect.width;
