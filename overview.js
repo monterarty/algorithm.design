@@ -104,8 +104,6 @@ function setYearsTimeline() {
         const itemYear = +dayItem.getAttribute('year');
             
         if (currentYear !== itemYear) {
-            console.log(dayItem.offsetLeft);
-            console.log(yearsTimlineWidth);
             if (yearsTimlineWidth - dayItem.offsetLeft < 100) {
                 document.getElementById('yearsTimeline-' + itemYear).style.right = 0;
                 document.getElementById('yearsTimeline-' + itemYear).style.left = 'auto';
@@ -170,7 +168,7 @@ function momentumScroll() {
 overviewWrapper.addEventListener('wheel', onWheel);
 overviewWrapper.addEventListener('wheel', onWheel);
     
-$(document).on('click', '.overview__item-link', function () {
+$(document).on('click', '.overview__item', function () {
     const data = {
         "hype": +$(this).attr('hype') + 1,
         "slug": $(this).attr('slug')
@@ -201,8 +199,8 @@ items.forEach((item) => {
     item.classList.add(getBackgroundClass(hype));
     item.querySelector('.overview__item-figure').style.height = `${hype}%`;
 
-    item.querySelector('.overview__item-figure').addEventListener('mouseenter', () => {
-        const itemTitle = item.closest('.overview__item').getAttribute('title');
+    item.querySelector('.overview__item-figure-wrap').addEventListener('mouseenter', () => {
+        const itemTitle = item.getAttribute('title');
         const elementTitle = item.closest('.overview__item-wrapper').querySelector('.overview__item-title')
 
         elementTitle.textContent = itemTitle;
