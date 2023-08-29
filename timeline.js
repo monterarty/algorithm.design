@@ -17,12 +17,11 @@ let cellListRect = null;
 let loadFromApi = false;
 let cellContainer = null;
 let grid = null;
-let backButton = null
 let cardListOffset = null;
-
+const backBtn = document.querySelector('.navbar__back-btn');
 let items = [];
 
-$(document).on('click', '.card', function() {
+$(document).on('click', '.card', function () {
     const data = {
         "hype": +$(this).attr('hype') + 1,
         "slug": $(this).attr('slug')
@@ -32,8 +31,7 @@ $(document).on('click', '.card', function() {
         dataType: 'application/json',
         method: 'PUT',
         data: JSON.stringify(data),
-        success: function(response){
-	   }
+        success: function (response) {}
     })
 })
 
@@ -48,13 +46,9 @@ document.addEventListener("DOMContentLoaded", _ => {
     const center = document.querySelector('.center');
     center.style.display = 'none';
     grid.style.display = 'grid';
-    backButton = document.querySelector('.navbar__back-btn')
-    backButton.addEventListener('click', () => {
-        cellList.children[0].click();
-    });
-    
+
     grid.appendChild(cellContainer);
-    
+
     if (loadFromApi) {
         loadItems(items).then(function () {
             // Preprocess items
@@ -321,12 +315,20 @@ function horizontalWheel() {
         scrollSpeed /= 1.1;
         if (Math.abs(scrollSpeed) < 1)
             return;
-        
-        if ((scrollWidth - cardList.scrollLeft) < 10) 
+
+        if (cardList.scrollLeft > 0 && !backBtn.classList.contains('is--active')) {
+            backBtn.classList.add('is--active');
+        }
+
+        if (cardList.scrollLeft === 0) {
+            backBtn.classList.remove('is--active');
+        }
+
+        if ((scrollWidth - cardList.scrollLeft) < 10)
             cellContainer.classList.add('end');
-        else if (cellContainer.classList.contains('end')) 
+        else if (cellContainer.classList.contains('end'))
             cellContainer.classList.remove('end');
-        
+
         // Break if already stopped
         if (cardList.scrollLeft === 0 || cardList.scrollLeft === scrollWidth) {
             return;
@@ -443,6 +445,22 @@ function horizontalWheel() {
         requestAnimationFrame(momentumScroll);
     }
 
+    function toStart() {
+        cardList.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        });
+        cellList.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        });
+        backBtn.classList.remove('is--active');
+    }
+
+    backBtn.addEventListener('click', toStart);
+
     cardList.addEventListener('wheel', onWheel);
     cellList.addEventListener('wheel', onWheel);
 
@@ -492,16 +510,16 @@ async function loadItems(items) {
     for (const item of items) {
         item.height = (item.sorting + 1) / (maxSorting + 1);
     }
-  
-  // for (let i = 0; i < 10; i++) {
-  //   items.push({height: 1, year: 2023});
-  // }
-  // for (let i = 0; i < 10; i++) {
-  //   items.push({height: 1, year: 2022});
-  // }
-  // for (let i = 0; i < 10; i++) {
-  //   items.push({height: 1, year: 2021});
-  // }
+
+    // for (let i = 0; i < 10; i++) {
+    //   items.push({height: 1, year: 2023});
+    // }
+    // for (let i = 0; i < 10; i++) {
+    //   items.push({height: 1, year: 2022});
+    // }
+    // for (let i = 0; i < 10; i++) {
+    //   items.push({height: 1, year: 2021});
+    // }
 }
 
 async function loadImage(url, alt, elem) {
@@ -522,9 +540,9 @@ async function populateLists() {
         card.id = `card-${i}`;
 
         if (items[i].thumbnail) {
-          const image = new Image();
-          await loadImage(items[i].thumbnail?.url ?? '', items[i].thumbnail?.alt ?? '', image);
-          div.appendChild(image);
+            const image = new Image();
+            await loadImage(items[i].thumbnail?.url ?? '', items[i].thumbnail?.alt ?? '', image);
+            div.appendChild(image);
         }
         const header = document.createElement('h1');
         header.textContent = items[i].name;
@@ -575,8 +593,8 @@ function getVisibleCards() {
     const cardsInScreen = Math.ceil(cellListRect.width / (cardRect.width + cardMargin)) + 1;
     const firstIndex = Math.floor(cardList.scrollLeft / (cardRect.width + cardMargin));
     const lastIndex = firstIndex + cardsInScreen > cardList.children.length ?
-                        cardList.children.length :
-                        firstIndex + cardsInScreen;
+        cardList.children.length :
+        firstIndex + cardsInScreen;
 
     const cards = [];
     for (let i = firstIndex; i < lastIndex; i++)
@@ -591,18 +609,18 @@ function getVisibleCells(years, all) {
     const firstCellId = Number(firstVisibleCard.id.replace('card-', ''));
     const yearsOffset = (yearWidth + yearMargin) * (items[Math.floor(firstCellId)].years);
     const coef = getScale();
-  
+
     let firstIndex = Math.floor((cellList.scrollLeft - yearsOffset) / (cellRect.width + cellMargin)) + items[firstCellId].years;
     if (all) {
-      if (cardList.scrollLeft * coef < cellList.scrollWidth - cellListRect.width)
-        firstIndex -= 4;
-      if (firstIndex < 0)
-        firstIndex = 0;
+        if (cardList.scrollLeft * coef < cellList.scrollWidth - cellListRect.width)
+            firstIndex -= 4;
+        if (firstIndex < 0)
+            firstIndex = 0;
     }
     if (firstIndex > cellList.children.length - 1) firstIndex = cellList.children.length - 1;
     const lastIndex = firstIndex + cellsInScreen + 10 > cellList.children.length ?
-                                cellList.children.length :
-                                firstIndex + cellsInScreen + 10;
+        cellList.children.length :
+        firstIndex + cellsInScreen + 10;
 
     const cells = [];
     for (let i = firstIndex; i < lastIndex; i++)
@@ -628,8 +646,8 @@ function tintCells() {
     }
 
     for (const year of visibleYears) {
-      year.style.background = '#000';
-      year.style.color = '#fff';
+        year.style.background = '#000';
+        year.style.color = '#fff';
     }
 
     const coef = cellRect.width / cardRect.width;
