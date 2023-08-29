@@ -1,16 +1,17 @@
 const overviewItems = document.querySelectorAll('.overview__item');
 const overviewWrapper = document.querySelector('.overview__wrapper');
 const timelines = document.querySelectorAll('.overview__timeline');
+const backBtn = document.querySelector('.navbar__back-btn');
 var yearsTimlineWidth = document.querySelector('.overview__timeline.is--years').clientWidth;
 var allDays = null;
 var years = [];
 var minYear = null;
 var maxYear = null;
 var currentYear = null;
- /** Momentum scrolling speed */
-let scrollSpeed = 0;
-let lastOffset = 0;
-let scrollWidth = 0;
+/** Momentum scrolling speed */
+var scrollSpeed = 0;
+var lastOffset = 0;
+var scrollWidth = 0;
 
 
 for (var i = 0; i < overviewItems.length; i++) {
@@ -102,7 +103,7 @@ function setYearsTimeline() {
     document.querySelector('.overview__frame-wrapper').style.width = yearsTimlineWidth + 'px';
     allDays.forEach(dayItem => {
         const itemYear = +dayItem.getAttribute('year');
-            
+
         if (currentYear !== itemYear) {
             if (yearsTimlineWidth - dayItem.offsetLeft < 100) {
                 document.getElementById('yearsTimeline-' + itemYear).style.right = 0;
@@ -135,39 +136,57 @@ function getBackgroundClass(hype) {
         backgroundClass = 'red';
     return backgroundClass;
 }
-            
+
 function momentumScroll() {
-        overviewWrapper.scrollTo({
-            top: 0,
-            left: overviewWrapper.scrollLeft + scrollSpeed
-        });
-        
-        // Decelerate
-        scrollSpeed /= 1.1;
-        if (Math.abs(scrollSpeed) < 1)
-            return;
+    overviewWrapper.scrollTo({
+        top: 0,
+        left: overviewWrapper.scrollLeft + scrollSpeed
+    });
 
-        // Break if already stopped
-        if (overviewWrapper.scrollLeft === 0 || overviewWrapper.scrollLeft === scrollWidth)
-            return;
-
-        requestAnimationFrame(momentumScroll);
-    }
-
-    function onWheel(e) {
-        e.preventDefault();
-        scrollWidth = overviewWrapper.scrollWidth - overviewWrapper.clientWidth;
-        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-            scrollSpeed = e.deltaY / 10;
-        } else {
-            scrollSpeed = e.deltaX / 10;
-        }
-        requestAnimationFrame(momentumScroll);
-    }
-
-overviewWrapper.addEventListener('wheel', onWheel);
-overviewWrapper.addEventListener('wheel', onWheel);
+    // Decelerate
+    scrollSpeed /= 1.1;
+    if (Math.abs(scrollSpeed) < 1)
+        return;
     
+    if (overviewWrapper.scrollLeft > 0 && !backBtn.classList.contains('is--active')) {
+        backBtn.classList.add('is--active');
+    } 
+    
+    if (overviewWrapper.scrollLeft === 0) {
+        backBtn.classList.remove('is--active');
+    }
+        
+    // Break if already stopped
+    if (overviewWrapper.scrollLeft === 0 || overviewWrapper.scrollLeft === scrollWidth)
+        return;
+
+    requestAnimationFrame(momentumScroll);
+}
+
+function onWheel(e) {
+    e.preventDefault();
+    scrollWidth = overviewWrapper.scrollWidth - overviewWrapper.clientWidth;
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        scrollSpeed = e.deltaY / 10;
+    } else {
+        scrollSpeed = e.deltaX / 10;
+    }
+    requestAnimationFrame(momentumScroll);
+}
+
+function toStart() {
+    overviewWrapper.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+    });
+    backBtn.classList.remove('is--active');
+}
+
+backBtn.addEventListener('click', toStart);
+overviewWrapper.addEventListener('wheel', onWheel);
+overviewWrapper.addEventListener('wheel', onWheel);
+
 $(document).on('click', '.overview__item', function () {
     const data = {
         "hype": +$(this).attr('hype') + 1,
