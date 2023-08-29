@@ -338,7 +338,11 @@ function horizontalWheel() {
     function onWheel(e) {
         e.preventDefault();
         scrollWidth = cardList.scrollWidth - cardList.clientWidth;
-        scrollSpeed = e.deltaY / 5;
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            scrollSpeed = e.deltaY / 5;
+        } else {
+            scrollSpeed = e.deltaX / 5;
+        }
         requestAnimationFrame(momentumScroll);
     }
 
