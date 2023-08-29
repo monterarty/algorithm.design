@@ -159,7 +159,11 @@ function momentumScroll() {
     function onWheel(e) {
         e.preventDefault();
         scrollWidth = overviewWrapper.scrollWidth - overviewWrapper.clientWidth;
-        scrollSpeed = e.deltaY / 10;
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            scrollSpeed = e.deltaY / 10;
+        } else {
+            scrollSpeed = e.deltaX / 10;
+        }
         requestAnimationFrame(momentumScroll);
     }
 
