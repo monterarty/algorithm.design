@@ -1,11 +1,16 @@
 const overviewItems = document.querySelectorAll('.overview__item');
+const overviewWrapper = document.querySelector('.overview__wrapper');
 const timelines = document.querySelectorAll('.overview__timeline');
-const yearsTimlineWidth = document.querySelector('.overview__timeline.is--years').clientWidth;
-var allDays = document.querySelectorAll('.is--reference .overview__day-item');
+var yearsTimlineWidth = document.querySelector('.overview__timeline.is--years').clientWidth;
+var allDays = null;
 var years = [];
 var minYear = null;
 var maxYear = null;
 var currentYear = null;
+ /** Momentum scrolling speed */
+let scrollSpeed = 0;
+let lastOffset = 0;
+let scrollWidth = 0;
 
 
 for (var i = 0; i < overviewItems.length; i++) {
@@ -70,6 +75,7 @@ for (var i = 0; i < timelines.length - 1; i++) {
     })
 }
 
+allDays = document.querySelectorAll('.is--reference .overview__day-item');
 allDays.forEach(dayItem => {
     const allDaysInTimeline = document.querySelectorAll('[date="' + dayItem.getAttribute('date') + '"]');
     var isDelete = 1;
@@ -88,10 +94,19 @@ allDays.forEach(dayItem => {
 
 function setYearsTimeline() {
     allDays = document.querySelectorAll('.is--reference .overview__day-item');
+    document.getElementById('yearsTimeline-' + maxYear).classList.add('is--active');
+    document.querySelectorAll('.overview__item-wrapper').forEach(element => {
+        element.style.width = document.querySelector('.overview__timeline').scrollWidth + 'px';
+    });
+    yearsTimlineWidth = document.querySelector('.overview__timeline.is--years').scrollWidth;
+    document.querySelector('.overview__frame-wrapper').style.width = yearsTimlineWidth + 'px';
     allDays.forEach(dayItem => {
         const itemYear = +dayItem.getAttribute('year');
+            
         if (currentYear !== itemYear) {
-            if (yearsTimlineWidth - dayItem.offsetLeft < 200) {
+            console.log(dayItem.offsetLeft);
+            console.log(yearsTimlineWidth);
+            if (yearsTimlineWidth - dayItem.offsetLeft < 100) {
                 document.getElementById('yearsTimeline-' + itemYear).style.right = 0;
                 document.getElementById('yearsTimeline-' + itemYear).style.left = 'auto';
                 document.getElementById('yearsTimeline-' + minYear).classList.add('is--active');
@@ -107,53 +122,6 @@ function setYearsTimeline() {
 
 setYearsTimeline();
 window.addEventListener('resize', setYearsTimeline);
-            
-$(document).on('click', '.overview__item-link', function() {
-    const data = {
-        "hype": +$(this).attr('hype') + 1,
-        "slug": $(this).attr('slug')
-    }
-    $.ajax({
-        url: 'https://algorithms.design/api/v1/collections/6304bbde7a4071611257d45e',
-        dataType: 'application/json',
-        method: 'PUT',
-        data: JSON.stringify(data),
-        success: function(response){
-		  console.log(response);
-	   }
-    })
-})
-
-const items = document.querySelectorAll('.overview__item');
-var maxHype = 0;
-for (const item of items) {
-		const hype = item.getAttribute('hype');
-    if (+hype > +maxHype) {
-        maxHype = +hype;
-		}
-}
-
-items.forEach((item) => {
-	var hype = item.getAttribute('hype');
-  hype = (+hype + 1) / (+maxHype + 1) * 100;
-  item.classList.add(getBackgroundClass(hype));
-	item.querySelector('.overview__item-figure').style.height = `${hype}%`; 
-  
-  item.querySelector('.overview__item-figure').addEventListener('mouseenter', () => {
-  	const itemTitle = item.closest('.overview__item').getAttribute('title');
-    const elementTitle = item.closest('.overview__item-wrapper').querySelector('.overview__item-title')
-		
-    elementTitle.textContent = itemTitle;
-    elementTitle.style.opacity = 1;
-  })
-  item.querySelector('.overview__item-figure').addEventListener('mouseleave', () => {
-   const elementTitle = item.closest('.overview__item-wrapper').querySelector('.overview__item-title')
-		
-    elementTitle.style.opacity = 0;
-  })
-});
-
-
 
 function getBackgroundClass(hype) {
     var backgroundClass = '';
@@ -169,3 +137,76 @@ function getBackgroundClass(hype) {
         backgroundClass = 'red';
     return backgroundClass;
 }
+            
+function momentumScroll() {
+        overviewWrapper.scrollTo({
+            top: 0,
+            left: overviewWrapper.scrollLeft + scrollSpeed
+        });
+        
+        // Decelerate
+        scrollSpeed /= 1.1;
+        if (Math.abs(scrollSpeed) < 1)
+            return;
+
+        // Break if already stopped
+        if (overviewWrapper.scrollLeft === 0 || overviewWrapper.scrollLeft === scrollWidth)
+            return;
+
+        requestAnimationFrame(momentumScroll);
+    }
+
+    function onWheel(e) {
+        e.preventDefault();
+        scrollWidth = overviewWrapper.scrollWidth - overviewWrapper.clientWidth;
+        scrollSpeed = e.deltaY / 10;
+        requestAnimationFrame(momentumScroll);
+    }
+
+overviewWrapper.addEventListener('wheel', onWheel);
+overviewWrapper.addEventListener('wheel', onWheel);
+    
+$(document).on('click', '.overview__item-link', function () {
+    const data = {
+        "hype": +$(this).attr('hype') + 1,
+        "slug": $(this).attr('slug')
+    }
+    $.ajax({
+        url: 'https://algorithms.design/api/v1/collections/6304bbde7a4071611257d45e',
+        dataType: 'application/json',
+        method: 'PUT',
+        data: JSON.stringify(data),
+        success: function (response) {
+            console.log(response);
+        }
+    })
+})
+
+const items = document.querySelectorAll('.overview__item');
+var maxHype = 0;
+for (const item of items) {
+    const hype = item.getAttribute('hype');
+    if (+hype > +maxHype) {
+        maxHype = +hype;
+    }
+}
+
+items.forEach((item) => {
+    var hype = item.getAttribute('hype');
+    hype = (+hype + 1) / (+maxHype + 1) * 100;
+    item.classList.add(getBackgroundClass(hype));
+    item.querySelector('.overview__item-figure').style.height = `${hype}%`;
+
+    item.querySelector('.overview__item-figure').addEventListener('mouseenter', () => {
+        const itemTitle = item.closest('.overview__item').getAttribute('title');
+        const elementTitle = item.closest('.overview__item-wrapper').querySelector('.overview__item-title')
+
+        elementTitle.textContent = itemTitle;
+        elementTitle.style.opacity = 1;
+    })
+    item.querySelector('.overview__item-figure').addEventListener('mouseleave', () => {
+        const elementTitle = item.closest('.overview__item-wrapper').querySelector('.overview__item-title')
+
+        elementTitle.style.opacity = 0;
+    })
+});
