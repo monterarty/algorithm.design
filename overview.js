@@ -206,7 +206,7 @@ items.forEach((item) => {
         elementTitle.textContent = itemTitle;
         elementTitle.style.opacity = 1;
     })
-    item.querySelector('.overview__item-figure').addEventListener('mouseleave', () => {
+    item.querySelector('.overview__item-figure-wrap').addEventListener('mouseleave', () => {
         const elementTitle = item.closest('.overview__item-wrapper').querySelector('.overview__item-title')
 
         elementTitle.style.opacity = 0;
