@@ -2,19 +2,19 @@
     --margin: 2.4rem;
     width: 100%;
     height: calc(100% - var(--margin) * 2);
-    aspect-ratio: 9 / 16;
+    aspect-ratio: 12 / 16;
     margin: var(--margin) 0 var(--margin) var(--margin);
     position: relative;
 }
 
 .card__inner-wrap::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 3rem;
-  width: 100%;
-  background: linear-gradient(to top, #000, transparent);
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3rem;
+    width: 100%;
+    background: linear-gradient(to top, #000, transparent);
 }
 
 .card::before {
@@ -28,7 +28,7 @@
     right: -2.4rem;
 }
 
-.card:last-child::before{
+.card:last-child::before {
     display: none;
 }
 
@@ -41,23 +41,23 @@
 }
 
 .green .card__background-item {
-    background-image: linear-gradient(90deg,rgba(238,255,132,0),#eeff84 50%,rgba(238,255,132,0));
+    background-image: linear-gradient(90deg, rgba(238, 255, 132, 0), #eeff84 50%, rgba(238, 255, 132, 0));
 }
 
 .turquoise .card__background-item {
-    background-image: linear-gradient(90deg,rgba(255,255,255,0),#B4F2EF 50%,rgba(255,255,255,0));
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0), #B4F2EF 50%, rgba(255, 255, 255, 0));
 }
 
 .pink .card__background-item {
-    background-image: linear-gradient(90deg,rgba(255,255,255,0),#F2A3FF 50%,rgba(255,255,255,0));
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0), #F2A3FF 50%, rgba(255, 255, 255, 0));
 }
 
 .orange .card__background-item {
-    background-image: linear-gradient(90deg,rgba(255,255,255,0),#FF8551 50%,rgba(255,255,255,0));
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0), #FF8551 50%, rgba(255, 255, 255, 0));
 }
 
 .red .card__background-item {
-    background-image: linear-gradient(90deg,rgba(255,255,255,0),#FB3C3C 50%,rgba(255,255,255,0));
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0), #FB3C3C 50%, rgba(255, 255, 255, 0));
 }
 
 .timeline__data {
@@ -66,28 +66,35 @@
 
 .navbar {
     position: fixed;
-    top:0;
+    top: 0;
     z-index: 10000;
-    left:0;
-    right:0;
+    left: 0;
+    right: 0;
 }
 
 .card:last-child {
-  margin: var(--margin);
+    margin: var(--margin);
 }
 
 .card div img {
-  width: 100%;
-  margin-bottom: 4px;
+    width: 100%;
+    margin-bottom: 4px;
 }
 
 .card div h1 {
-  font-size: 1.2em;
-  margin-bottom: 8px;
+    font-size: 1.2em;
+    margin-bottom: 8px;
 }
 
 .card div p {
-  margin-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.card div {
+    /* width: 100%; */
+    /* height: 100%; */
+    /* overflow: hidden; */
+
 }
 
 .cell {
@@ -99,36 +106,43 @@
     flex-grow: 1;
     position: relative;
     min-width: 1.5rem;
-    height: calc( var(--height));
+    height: calc(var(--height));
     margin: 0 var(--margin) 0 0;
     cursor: pointer;
     user-select: none;
     background: #fff;
+
 }
+
+.cell:last-child {
+    /* margin: var(--margin); */
+
+}
+
 .cell::before {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  height: 100%;
-  width: var(--left-width);
-  background: var(--tint);
-  content: '';
-  z-index: 1000;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    width: var(--left-width);
+    background: var(--tint);
+    content: '';
+    z-index: 1000;
 }
 
 .cell::after {
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: 100%;
-  width: var(--right-width);
-  background: var(--tint);
-  content: '';
-  z-index: 1000;
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: var(--right-width);
+    background: var(--tint);
+    content: '';
+    z-index: 1000;
 }
 
 .cells-container::after {
@@ -139,7 +153,7 @@
     top: 0;
     pointer-events: none;
     height: 100%;
-    background: linear-gradient(to left, #000, rgba(0,0,0,0));
+    background: linear-gradient(to left, #000, rgba(0, 0, 0, 0));
     transition: all 500ms ease;
 }
 
@@ -157,7 +171,8 @@
     z-index: 10;
     pointer-events: none;
     height: 100%;
-    background: linear-gradient(to right, #000, rgba(0,0,0,0));
+    background: linear-gradient(to right, #000, rgba(0, 0, 0, 0));
+
 }
 
 .year {
@@ -174,6 +189,7 @@
     cursor: pointer;
     transition: all 300ms ease;
     user-select: none;
+
 }
 
 .first-year {
@@ -195,22 +211,26 @@
 }
 
 .center {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}       
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 @media(max-width: 768px) {
-  .card {
-    --margin: .8rem;
-  }
+    .card {
+        --margin: .8rem;
+    }
+
+    .card {
+        aspect-ratio: 9 / 16;
+    }
 }
